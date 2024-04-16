@@ -4,7 +4,7 @@ using namespace std;
 class node
 {
 public:
-    int val;
+    int data;
     node *left;
     node *right;
     node()
@@ -14,7 +14,7 @@ public:
     }
     node(int x)
     {
-        val = x;
+        data = x;
         left = NULL;
         right = NULL;
     }
@@ -22,23 +22,23 @@ public:
 
 void insert_node(int x, node *&root)
 {
-    node *nw = new node(x);
+    node *newNode = new node(x);
     if (root == NULL)
     {
-        root = nw;
+        root = newNode;
         return;
     }
     char choice;
     node *temp = root;
     while (true)
     {
-        cout << "Move left(l) or right(r) of" << temp->val << endl;
+        cout << "Move left(l) or right(r) of" << temp->data << endl;
         cin >> choice;
         if (choice == 'l')
         {
-            if (temp->left == NULL) 
+            if (temp->left == NULL)
             {
-                temp->left = nw;
+                temp->left = newNode;
                 return;
             }
             else
@@ -48,7 +48,7 @@ void insert_node(int x, node *&root)
         {
             if (temp->right == NULL)
             {
-                temp->right = nw;
+                temp->right = newNode;
                 return;
             }
             else
@@ -60,6 +60,7 @@ void insert_node(int x, node *&root)
 void insertIntoBST(node *&root, int key)
 {
     node *nw = new node(key);
+
     if (root == NULL)
     {
         root = nw;
@@ -68,7 +69,7 @@ void insertIntoBST(node *&root, int key)
     node *temp = root;
     while (true)
     {
-        if (temp->val > key)
+        if (temp->data > key)
         {
             if (temp->left == NULL)
             {
@@ -91,17 +92,257 @@ void insertIntoBST(node *&root, int key)
     }
 }
 
+// RECURSIVE TRAVERSAL DFS
+
+void printInorder(node *&root)
+{
+    if (root == NULL)
+        return;
+
+    printInorder(root->left);
+    cout << root->data << " ";
+    printInorder(root->right);
+}
+
+void printPreorder(node *&root)
+{
+    if (root == NULL)
+        return;
+
+    cout << root->data << " ";
+    printPreorder(root->left);
+    printPreorder(root->right);
+}
+
+void printPostorder(node *&root)
+{
+    if (root == NULL)
+        return;
+
+    printPostorder(root->left);
+    printPostorder(root->right);
+    cout << root->data << " ";
+}
+
+// NON-RECURSIVE LEVEL ORDER OR BFS
+
+void bfs(node *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    queue<node *> q;
+    q.push(root);
+
+    while (!q.empty())
+    {
+        node *current = q.front();
+        q.pop();
+
+        cout << current->data << " ";
+
+        if (current->left != nullptr)
+        {
+            q.push(current->left);
+        }
+        if (current->right != nullptr)
+        {
+            q.push(current->right);
+        }
+    }
+    cout << endl;
+}
+
+// NON-RECURSIVE TRAVERSAL DFS
+
+void iterativeInOrder(node *&root)
+{
+    if (root == NULL)
+        return;
+
+    stack<node *> s;
+    node *current = root;
+
+    while (current != NULL || !s.empty())
+    {
+        while (current != NULL)
+        {
+            s.push(current);
+            current = current->left;
+        }
+
+        current = s.top();
+        s.pop();
+
+        cout << current->data << " ";
+        current = current->right;
+    }
+    cout << endl;
+}
+
+void iterativePreorder(node *root)
+{
+
+    if (root == NULL)
+        return;
+
+    stack<node *> s;
+    s.push(root);
+
+    while (!s.empty())
+    {
+        node *current = s.top();
+
+        cout << current->data << " ";
+        s.pop();
+
+        if (current->right)
+            s.push(current->right);
+        if (current->left)
+            s.push(current->left);
+    }
+    cout << endl;
+}
+
+void iterativePostOrder(node *root)
+{
+    if (root == NULL)
+        return;
+
+    stack<node *> s1, s2;
+
+    s1.push(root);
+    node *newNode;
+
+    while (!s1.empty())
+    {
+        newNode = s1.top();
+        s1.pop();
+        s2.push(newNode);
+
+        if (newNode->left)
+            s1.push(newNode->left);
+        if (newNode->right)
+            s1.push(newNode->right);
+    }
+
+    while (!s2.empty())
+    {
+        newNode = s2.top();
+        s2.pop();
+        cout << newNode->data << " ";
+    }
+    cout << endl;
+}
+
+// HEIGHT
+
+int recursiveHeight(node *root)
+{
+    if (root == nullptr)
+        return 0;
+
+    int left_height = recursiveHeight(root->left);
+    int right_height = recursiveHeight(root->right);
+
+    return 1 + max(left_height, right_height);
+}
+
+int iterativeHeight(node *root)
+{
+
+    int depth = 0;
+
+    queue<node *> q;
+
+    q.push(root);
+    q.push(NULL);
+    while (!q.empty())
+    {
+        node *temp = q.front();
+        q.pop();
+
+        if (temp == NULL)
+        {
+            depth++;
+        }
+
+        if (temp != NULL)
+        {
+            if (temp->left)
+            {
+                q.push(temp->left);
+            }
+            if (temp->right)
+            {
+                q.push(temp->right);
+            }
+        }
+
+        else if (!q.empty())
+        {
+            q.push(NULL);
+        }
+    }
+    return depth;
+}
+
+node *cloneTree(node *root)
+{
+    if (root == nullptr)
+        return nullptr;
+
+    node *newNode = new node(root->data);
+
+    newNode->left = cloneTree(root->left);
+    newNode->right = cloneTree(root->right);
+
+    return newNode;
+}
+
+void eraseTree(node *&root)
+{
+    if (root == nullptr)
+        return;
+
+    eraseTree(root->left);
+    eraseTree(root->right);
+
+    delete root;
+    root = nullptr;
+}
+
+void mirrorImage(node *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    node *newNode = root->left;
+    root->left = root->right;
+    root->right = newNode;
+
+    mirrorImage(root->left);
+    mirrorImage(root->right);
+}
+
+// DELETE NODE FROM BST
+
 node *deleteNode(node *root, int k)
 {
+
     if (root == NULL)
         return root;
 
-    if (root->val > k)
+    if (root->data > k)
     {
         root->left = deleteNode(root->left, k);
         return root;
     }
-    else if (root->val < k)
+    else if (root->data < k)
     {
         root->right = deleteNode(root->right, k);
         return root;
@@ -121,273 +362,134 @@ node *deleteNode(node *root, int k)
     }
     else
     {
+
         node *succParent = root;
+
+        // Find successor
         node *succ = root->right;
         while (succ->left != NULL)
         {
             succParent = succ;
             succ = succ->left;
         }
+
+        // Delete successor.  Since successor
+        // is always left child of its parent
+        // we can safely make successor's right
+        // right child as left of its parent.
+        // If there is no succ, then assign
+        // succ->right to succParent->right
         if (succParent != root)
             succParent->left = succ->right;
         else
             succParent->right = succ->right;
 
-        root->val = succ->val;
+        // Copy Successor Data to root
+        root->data = succ->data;
 
+        // Delete Successor and return root
         delete succ;
         return root;
     }
 }
 
-int search(vector<int> arr, int strt, int end, int value)
+bool areEqual(node *p, node *q)
 {
-    for (int i = strt; i <= end; i++)
-    {
-        if (arr[i] == value)
-            return i;
-    }
-}
 
-node *buildTree(vector<int> in, vector<int> pre, int inStrt, int inEnd)
-{
-    static int preIndex = 0;
-    if (inStrt > inEnd)
-        return NULL;
+    if (p == nullptr && q == nullptr)
+        return true;
 
-    node *tNode = new node(pre[preIndex++]);
+    if (p == nullptr || q == nullptr)
+        return false;
 
-    if (inStrt == inEnd)
-        return tNode;
+    if (p->data != q->data)
+        return false;
 
-    int inIndex = search(in, inStrt, inEnd, tNode->val);
-    tNode->left = buildTree(in, pre, inStrt, inIndex - 1);
-    tNode->right = buildTree(in, pre, inIndex + 1, inEnd);
-    return tNode;
-}
-
-void mirrorImage(node *root, node *&image)
-{
-    if (root == NULL)
-        return;
-    else if (root)
-        image = new node(root->val);
-    mirrorImage(root->left, image->right);
-    mirrorImage(root->right, image->left);
-}
-
-void cloning(node *root, node *&cloned)
-{
-    if (root == NULL)
-        return;
-    cloned = new node(root->val);
-    cloning(root->left, cloned->left);
-    cloning(root->right, cloned->right);
-}
-
-void level_order(node *root)
-{
-    node *temp = root;
-    vector<int> v;
-    queue<node *> q;
-    q.push(root);
-    cout << "Level order traversal : " << endl;
-    while (!q.empty())
-    {
-        node *curr = q.front();
-        cout << curr->val << " ";
-        v.push_back(curr->val);
-        q.pop();
-        if (curr->left)
-            q.push(curr->left);
-        if (curr->right)
-            q.push(curr->right);
-    }
-    cout << endl;
-}
-
-void preorder(node *root)
-{
-    if (root == NULL)
-        return;
-    cout << root->val << " ";
-    preorder(root->left);
-    preorder(root->right);
-}
-
-void inorder(node *root)
-{
-    if (root == NULL)
-        return;
-    inorder(root->left);
-    cout << root->val << " ";
-    inorder(root->right);
-}
-
-void postorder(node *root)
-{
-    if (root == NULL)
-        return;
-    postorder(root->left);
-    postorder(root->right);
-    cout << root->val << " ";
-}
-
-vector<int> Iterative_preorder(node *root)
-{
-    vector<int> v;
-    node *temp = root;
-    stack<node *> s;
-    if (root == NULL)
-        return v;
-    else
-        s.push(root);
-    while (!s.empty())
-    {
-        node *curr = s.top();
-        v.push_back(curr->val);
-        s.pop();
-        if (curr->right != NULL)
-            s.push(curr->right);
-        if (curr->left != NULL)
-            s.push(curr->left);
-    }
-    cout << "Iterative preorder traversal: ";
-    for (auto it : v)
-    {
-        cout << it << " ";
-    }
-    cout << endl;
-    return v;
-}
-
-vector<int> Iterative_inorder(node *root)
-{
-    vector<int> v;
-    node *temp = root;
-    stack<node *> s;
-    while (true)
-    {
-        if (temp != NULL)
-        {
-            s.push(temp);
-            temp = temp->left;
-        }
-        else
-        {
-            if (s.empty())
-                break;
-            temp = s.top();
-            v.push_back(temp->val);
-            s.pop();
-            temp = temp->right;
-        }
-    }
-    cout << "Iterative inorder traversl :" << endl;
-    for (auto it : v)
-    {
-        cout << it << " ";
-    }
-    cout << endl;
-    return v;
-}
-
-void Iterative_postorder(node *root)
-{
-    stack<node *> first;
-    stack<node *> second;
-    node *temp = root;
-    if (root == NULL)
-        return;
-    first.push(root);
-    while (!first.empty())
-    {
-        temp = first.top();
-        first.pop();
-        second.push(temp);
-        if (temp->left)
-            first.push(temp->left);
-        if (temp->right)
-            first.push(temp->right);
-    }
-    cout << "Iterative postorder traversal : " << endl;
-    while (!second.empty())
-    {
-        temp = second.top();
-        cout << temp->val << " ";
-        second.pop();
-    }
-    cout << endl;
-}
-
-int height(node *root)
-{
-    if (root == NULL)
-        return 0;
-    int lht = height(root->left);
-    int rht = height(root->right);
-    return 1 + max(lht, rht);
+    return areEqual(p->left, q->left) && areEqual(p->right, q->right);
 }
 
 int main()
 {
-    node *root = NULL;
-    root = new node(1);
-    root->left = new node(2);
-    root->right = new node(3);
-    root->left->left = new node(4);
-    // root->left->right = new node(5);
-    // root->right->left = new node(6);
-    root->right->right = new node(7);
+    node *originalRoot = NULL;
+    originalRoot = new node(1);
+    originalRoot->left = new node(2);
+    originalRoot->right = new node(3);
+    originalRoot->left->left = new node(4);
+    originalRoot->right->right = new node(5);
 
-    // char ch='y';
-    // while(ch=='y')
-    // {
-    //   int x;
-    //   cout<<"Enter the value to be inserted : "<<endl;
-    //   cin>>x;
-    //   insert_node(x,root);
-    //   cout<<"Press y to continue: ";
-    //   cin>>ch;
-    // }
+    cout << "Inorder: ";
+    printInorder(originalRoot);
+    cout << endl;
+
+    cout << "Preorder: ";
+    printPreorder(originalRoot);
+    cout << endl;
+
+    cout << "Postorder: ";
+    printPostorder(originalRoot);
+    cout << endl;
+
+    cout << "BFS: ";
+    bfs(originalRoot);
+
+    cout << "Non-recursive Inorder: ";
+    iterativeInOrder(originalRoot);
+
+    cout << "Non-recursive Preorder: ";
+    iterativePreorder(originalRoot);
+
+    cout << "Non-recursive Postorder: ";
+    iterativePostOrder(originalRoot);
+
+    cout << "Recursive Height: ";
+    cout << recursiveHeight(originalRoot) << endl;
+
+    cout << "Non-Recursive Height: ";
+    cout << iterativeHeight(originalRoot) << endl;
+
+    node *cloneRoot = cloneTree(originalRoot);
+
+    eraseTree(originalRoot);
+
+    cout << "Mirror Image: ";
+    mirrorImage(cloneRoot);
+    printInorder(cloneRoot);
+    cout << endl;
 
     node *bst = NULL;
-    insertIntoBST(bst, 1);
-    insertIntoBST(bst, 2);
-    insertIntoBST(bst, 3);
+    insertIntoBST(bst, 15);
+    insertIntoBST(bst, 8);
+    insertIntoBST(bst, 30);
     insertIntoBST(bst, 4);
-    insertIntoBST(bst, 5);
-    level_order(bst);
-    cout << "..........................................................." << endl;
-    node *mirror = NULL;
-    mirrorImage(bst, mirror);
-    cout << "Mirror image for above bst : ";
-    level_order(mirror);
-    cout << "..........................................................." << endl;
-    node *copyTree = NULL;
-    cloning(bst, copyTree);
-    cout << "Clone of given bst : ";
-    level_order(copyTree);
-    cout << "..........................................................." << endl;
-    // level_order(root);
-    vector<int> pre = Iterative_preorder(root);
-    vector<int> in = Iterative_inorder(root);
-    Iterative_postorder(root);
-    int lenIn = in.size() - 1;
-    node *formed = buildTree(in, pre, 0, lenIn);
-    cout << "Tree builded using preorder and inorder traversal : " << endl;
-    Iterative_inorder(formed);
-    Iterative_preorder(formed);
-    cout << "............................................................." << endl;
-    cout << "Inorder traversal : " << endl;
-    inorder(root);
+    insertIntoBST(bst, 53);
+
+    cout << "------------------BINARY SEARCH TREE------------------\n";
+    cout << "Inorder: ";
+    printInorder(bst);
     cout << endl;
-    cout << "Preorder traversal : " << endl;
-    preorder(root);
+
+    cout << "------------------DELETE NODE IN BST------------------\n";
+    deleteNode(bst, 30);
+    cout << "Inorder: ";
+    printInorder(bst);
     cout << endl;
-    cout << "Postorder traversal : " << endl;
-    postorder(root);
-    cout << endl;
-    cout << "..............................................................." << endl;
-    cout << "Height of the given tree is : " << height(root) << endl;
+
+    cout << "------------------CHECKING TREE ARE EQUAL OR NOT------------------\n";
+
+    node *root1 = new node(1);
+    root1->left = new node(2);
+    root1->right = new node(3);
+    root1->left->left = new node(4);
+    root1->left->right = new node(5);
+
+    node *root2 = new node(1);
+    root2->left = new node(2);
+    root2->right = new node(3);
+    root2->left->left = new node(6);
+    root2->left->right = new node(5);
+
+    if (areEqual(root1, root2))
+        cout << "The two trees are equal." << endl;
+    else
+        cout << "The two trees are not equal." << endl;
 }

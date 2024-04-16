@@ -1,73 +1,106 @@
-#include <iostream>
-#include <vector>
-#include <stack>
+#include <bits/stdc++.h>
+
 using namespace std;
 
-class Graph {
-public:
-    void input(vector<vector<int>>& adj_mat, int n) {
-        int val;
-        cout << "Enter adjacency matrix elements: ";
-        for (int i = 0; i < n; i++) {
-            vector<int> row;
-            for (int j = 0; j < n; j++) {
-                cin >> val;
-                row.push_back(val);
-            }
-            adj_mat.push_back(row);
-        }
-    }
+const int MAX_NODES = 100;
+int graph[MAX_NODES][MAX_NODES] = {0};
 
-    void output(vector<vector<int>>& adj_mat, int n) {
-        cout << "Adjacency Matrix:" << endl;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                cout << adj_mat[i][j] << " ";
-            }
-            cout << endl;
-        }
-    }
+void addEdge(int x, int y)
+{
+    graph[x][y] = 1;
+    graph[y][x] = 1;
+}
 
-    void DFS(vector<vector<int>>& adj_mat, int n, int start) {
-        vector<bool> visited(n, false);
-        stack<int> s;
-        s.push(start);
+// Depth First Search function
+void DFS(int nodes, int start, bool visited[])
+{
+    stack<int> st;
+    st.push(start);
+    visited[start] = true;
 
-        cout << "Depth First Traversal: ";
-        while (!s.empty()) {
-            int vertex = s.top();
-            s.pop();
+    while (!st.empty())
+    {
+        int current = st.top();
+        st.pop();
+        cout << current << " ";
 
-            if (!visited[vertex]) {
-                cout << vertex << " ";
-                visited[vertex] = true;
-
-                for (int i = 0; i < n; ++i) {
-                    if (adj_mat[vertex][i] && !visited[i]) {
-                        s.push(i);
-                    }
-                }
+        for (int i = 0; i < nodes; ++i)
+        {
+            if (graph[current][i] == 1 && !visited[i])
+            {
+                st.push(i);
+                visited[i] = true;
             }
         }
-        cout << endl;
     }
-};
+}
 
-int main() {
-    int n;
-    cout << "Enter the number of vertices: ";
-    cin >> n;
+void BFS(int nodes, int start, bool visited[])
+{
+    queue<int> q;
+    q.push(start);
+    visited[start] = true;
 
-    Graph g;
-    vector<vector<int>> adj_mat;
+    while (!q.empty())
+    {
+        int current = q.front();
+        q.pop();
+        cout << current << " ";
 
-    g.input(adj_mat, n);
-    g.output(adj_mat, n);
+        for (int i = 0; i < nodes; ++i)
+        {
+            if (graph[current][i] == 1 && !visited[i])
+            {
+                q.push(i);
+                visited[i] = true;
+            }
+        }
+    }
+}
 
-    int startVertex;
-    cout << "Enter starting vertex for DFS: ";
-    cin >> startVertex;
-    g.DFS(adj_mat, n, startVertex);
+int main()
+{
+    int nodes, edges;
+    cout << "Enter the number of nodes: ";
+    cin >> nodes;
+    cout << "Enter the number of edges: ";
+    cin >> edges;
+
+    bool visited[MAX_NODES] = {false};
+
+    // for (int i = 0; i < edges; ++i)
+    // {
+    //     int node1, node2;
+    //     cout << "Node1: ";
+    //     cin >> node1;
+    //     cout << "Node2: ";
+    //     cin >> node2;
+    //     addEdge(node1, node2);
+    // }
+
+    addEdge(0, 1);
+    addEdge(0, 2);
+    addEdge(1, 3);
+    addEdge(1, 4);
+    addEdge(2, 4);
+
+    int startNode;
+    cout << "Enter the starting node for DFS: ";
+    cin >> startNode;
+
+    cout << "Depth First Traversal starting from node " << startNode << ": ";
+    DFS(nodes, startNode, visited);
+    cout << endl;
+
+    // Reset visited array for BFS
+    memset(visited, false, sizeof(visited));
+
+    cout << "Enter the starting node for BFS: ";
+    cin >> startNode;
+
+    cout << "Breadth First Traversal starting from node " << startNode << ": ";
+    BFS(nodes, startNode, visited);
+    cout << endl;
 
     return 0;
 }
