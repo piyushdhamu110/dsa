@@ -365,7 +365,6 @@ node *deleteNode(node *root, int k)
 
         node *succParent = root;
 
-        // Find successor
         node *succ = root->right;
         while (succ->left != NULL)
         {
@@ -373,21 +372,13 @@ node *deleteNode(node *root, int k)
             succ = succ->left;
         }
 
-        // Delete successor.  Since successor
-        // is always left child of its parent
-        // we can safely make successor's right
-        // right child as left of its parent.
-        // If there is no succ, then assign
-        // succ->right to succParent->right
         if (succParent != root)
             succParent->left = succ->right;
         else
             succParent->right = succ->right;
 
-        // Copy Successor Data to root
         root->data = succ->data;
 
-        // Delete Successor and return root
         delete succ;
         return root;
     }
