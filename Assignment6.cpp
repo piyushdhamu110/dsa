@@ -58,6 +58,34 @@ void BFS(int nodes, int start, bool visited[])
     }
 }
 
+void DFS_Util(int nodes, int current, bool visited[])
+{
+    visited[current] = true;
+    for (int i = 0; i < nodes; ++i)
+    {
+        if (graph[current][i] && !visited[i])
+        {
+            DFS_Util(nodes, i, visited);
+        }
+    }
+}
+
+bool isConnected(int nodes)
+{
+    bool visited[MAX_NODES] = {false};
+    int startNode = 0;
+    DFS_Util(nodes, startNode, visited);
+
+    for (int i = 0; i < nodes; ++i)
+    {
+        if (!visited[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main()
 {
     int nodes, edges;
@@ -81,8 +109,8 @@ int main()
     addEdge(0, 1);
     addEdge(0, 2);
     addEdge(1, 3);
-    addEdge(1, 4);
-    addEdge(2, 4);
+    addEdge(1, 5);
+    addEdge(2, 5);
 
     int startNode;
     cout << "Enter the starting node for DFS: ";
@@ -101,6 +129,20 @@ int main()
     cout << "Breadth First Traversal starting from node " << startNode << ": ";
     BFS(nodes, startNode, visited);
     cout << endl;
+
+    // Reset visited array for BFS
+    memset(visited, false, sizeof(visited));
+
+    cout << "Checking whether graph is connected or not:  ";
+
+    if (isConnected(nodes))
+    {
+        cout << "Graph is connected.\n";
+    }
+    else
+    {
+        cout << "Graph is not connected.\n";
+    }
 
     return 0;
 }
