@@ -165,7 +165,7 @@ void iterativeInOrder(node *&root)
     stack<node *> s;
     node *current = root;
 
-    while (current != NULL || !s.empty())
+    while (current!=NULL ||  !s.empty())
     {
         while (current != NULL)
         {
@@ -269,6 +269,11 @@ int iterativeHeight(node *root)
             depth++;
         }
 
+        if (temp == NULL && !q.empty())
+        {
+            q.push(NULL);
+        }
+
         if (temp != NULL)
         {
             if (temp->left)
@@ -281,10 +286,7 @@ int iterativeHeight(node *root)
             }
         }
 
-        else if (!q.empty())
-        {
-            q.push(NULL);
-        }
+       
     }
     return depth;
 }
@@ -448,19 +450,21 @@ int main()
     cout << endl;
 
     node *bst = NULL;
-    insertIntoBST(bst, 15);
-    insertIntoBST(bst, 8);
-    insertIntoBST(bst, 30);
+    insertIntoBST(bst, 5);
+    insertIntoBST(bst, 3);
+    insertIntoBST(bst, 7);
+    insertIntoBST(bst, 2);
     insertIntoBST(bst, 4);
-    insertIntoBST(bst, 53);
+    insertIntoBST(bst, 6);
+    insertIntoBST(bst, 8);
 
     cout << "------------------BINARY SEARCH TREE------------------\n";
     cout << "Inorder: ";
-    printInorder(bst);
+    iterativeInOrder(bst);
     cout << endl;
 
     cout << "------------------DELETE NODE IN BST------------------\n";
-    deleteNode(bst, 30);
+    deleteNode(bst, 8);
     cout << "Inorder: ";
     printInorder(bst);
     cout << endl;

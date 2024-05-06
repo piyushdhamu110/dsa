@@ -1,4 +1,4 @@
-// linear probing with chaining with replacement
+// linear probing with chaining without replacement
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -30,81 +30,61 @@ public:
 
 void hashing::insert(int value)
 {
-    int index = value % 10;
 
-    if (hashtable[index].key == -1)
+    int index = value % 10;
+    int initialIndex = index;
+
+    // Empty
+    if (hashtable[index].key == -1 && hashtable[index].chain == -1)
     {
         hashtable[index].key = value;
         return;
     }
+
+    // not empty && having same hash value -->> follow chain
     else if (hashtable[index].key != -1 && (hashtable[index].key) % 10 == value % 10)
     {
 
         while (hashtable[index].chain != -1)
         {
-            index = hashtable[index].chain;
+            index = ((hashtable[index].chain));
         }
+
         int store = index;
 
         while (hashtable[index].key != -1)
         {
             index = (index + 1) % 10;
-            if (index == store)
-            {
-                cout << "Hashtable is full\n";
-                return;
-            }
         }
 
         hashtable[index].key = value;
         hashtable[store].chain = index;
     }
-    else
+
+    // not empty and having different hash value
+    else if (hashtable[index].key != -1 && (hashtable[index].key) % 10 != value % 10)
     {
-
-        int temp_value = hashtable[index].key;
-        int temp_index = hashtable[index].chain;
-
-        hashtable[index].key = value;
-        hashtable[index].chain = -1;
-
-        for (int i = 0; i < 10; i++)
-        {
-            if (hashtable[i].chain == index)
-            {
-                hashtable[i].chain = temp_index;
-                break;
-            }
-        }
-
-        index = temp_index;
-        value = temp_value;
-
-        while (hashtable[index].chain != -1)
-        {
-            temp_value = hashtable[index].key;
-            temp_index = hashtable[index].chain;
-
-            hashtable[index].key = value;
-
-            value = temp_value;
-            index = temp_index;
-        }
-
-        temp_value = hashtable[index].key;
-        hashtable[index].key = value;
-
-        temp_index = index;
-
+        int store;
         while (hashtable[index].key != -1)
         {
+            if ((hashtable[index].key) % 10 == value % 10)
+            {
+                store = index;
+            }
             index = (index + 1) % 10;
         }
 
-        hashtable[index].key = temp_value;
-        hashtable[temp_index].chain = index;
+        hashtable[index].key = value;
+        hashtable[store].chain = index;
     }
 }
+
+// void hashing::search(int key, int chain)
+// {
+// }
+// void hashing::Delete(int key, int chain)
+// {
+// }
 
 void hashing::display()
 {
@@ -136,15 +116,6 @@ int main()
     h.insert(51);
     h.insert(16);
     h.insert(71);
-    h.insert(42);
-    h.display();
-    cout << "--------------------------------\n";
-    h.insert(55);
-    h.display();
-    cout << "--------------------------------\n";
-    h.insert(88);
-    h.display();
-    cout << "--------------------------------\n";
-    h.insert(77);
+
     h.display();
 }

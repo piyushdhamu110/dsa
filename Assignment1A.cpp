@@ -1,7 +1,7 @@
 // linear probing
 
 #include <bits/stdc++.h>
-    using namespace std;
+using namespace std;
 
 struct rec
 {

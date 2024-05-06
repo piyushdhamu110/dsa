@@ -37,15 +37,13 @@ public:
     }
 
     void insert(string w, string m);
- 
+
     void search(string w);
     void display();
 };
 
-
 void Hashing::insert(string word, string meaning)
 {
-   
 
     int index = 0;
     for (int i = 0; i < word.length(); i++)
@@ -72,7 +70,6 @@ void Hashing::insert(string word, string meaning)
 
 void Hashing::search(string word)
 {
-   
 
     int index = 0;
     for (int i = 0; i < word.length(); i++)
@@ -87,7 +84,7 @@ void Hashing::search(string word)
     {
         if (temp->word == word)
         {
-            cout<<"Word Found\n";
+            cout << "Word Found\n";
             cout << "Meaning: " << temp->meaning << endl;
             return;
         }
@@ -116,15 +113,14 @@ int main()
 {
     Hashing hashTable;
 
-    ifstream Input("Data.txt");
-    string word,meaning;
-    while(Input>>word>>meaning)
+    ifstream Input("Assignment2Data.txt");
+    string word, meaning;
+    while (Input >> word >> meaning)
     {
-        hashTable.insert(word,meaning);
+        hashTable.insert(word, meaning);
     }
 
     hashTable.display();
-
 
     hashTable.search("sad");
 

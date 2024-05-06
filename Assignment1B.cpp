@@ -109,7 +109,7 @@ int main()
 
     cout << "-----------------Inserting-----------------\n";
 
-    h.insert(131);
+    h.insert(11);
     h.insert(13);
     h.insert(14);
     h.insert(31);
